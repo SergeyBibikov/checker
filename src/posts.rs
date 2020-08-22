@@ -24,7 +24,7 @@ pub fn tls_post_req(path: &String, domain: &String, port: &String, body: &String
     let tcp_stream = TcpStream::connect(&dom_port).unwrap();
     let mut tls_stream = connector.connect(domain, tcp_stream).unwrap(); 
     tls_stream.write(request).unwrap();
-    tls_stream.read_to_string(&mut response).unwrap();
+    tls_stream.read(&mut response).unwrap();
     println!("The response is\n{}", std::string::String::from_utf8(response).unwrap());  
 }
 
