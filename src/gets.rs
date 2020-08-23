@@ -8,11 +8,13 @@ pub fn get_req(path: &String, domain: &String, port: &String, headers: &String){
     let temp = create_get_req(path, domain, headers);
     let request = temp.as_bytes();
     let dom_port = format!("{}:{}",domain,port);
-    let mut response = vec![0u8;10240];
+    let mut response = vec![0u8;40960];
     let mut connection = TcpStream::connect(&dom_port).unwrap();                        
     connection.write(request).unwrap();
     connection.read(&mut response).unwrap();
-    println!("The response is\n\n{}\n==============================", std::string::String::from_utf8(response).unwrap());       
+    println!("The 1st part of the response is\n\n{}\n==============================", std::str::from_utf8(&response).unwrap());
+    connection.read(&mut response).unwrap();
+    println!("The 2nd part of the response is\n\n{}\n==============================", std::str::from_utf8(&response).unwrap());        
 }   
 
 pub fn tls_get_req(path: &String, domain: &String, port: &String, headers: &String){
@@ -20,12 +22,14 @@ pub fn tls_get_req(path: &String, domain: &String, port: &String, headers: &Stri
     let temp = create_get_req(path, domain, headers);
     let request = temp.as_bytes();
     let dom_port = format!("{}:{}",domain,port);
-    let mut response = vec![0u8;10240];
+    let mut response = vec![0u8;40960];
     let tcp_stream = TcpStream::connect(&dom_port).unwrap();
     let mut tls_stream = connector.connect(&domain, tcp_stream).unwrap();    
     tls_stream.write(request).unwrap();
     tls_stream.read(&mut response).unwrap();
-    println!("The response is\n\n{}\n==============================", std::string::String::from_utf8(response).unwrap()); 
+    println!("The 1st part of the response is\n\n{}\n==============================", std::str::from_utf8(&response).unwrap()); 
+    tls_stream.read(&mut response).unwrap();
+    println!("The 2nd part of the response is\n\n{}\n==============================", std::str::from_utf8(&response).unwrap());
 }
 
 fn create_get_req(path: &String, domain: &String, headers: &String)-> String {
