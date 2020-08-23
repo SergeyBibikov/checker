@@ -12,7 +12,7 @@ pub fn post_req(path: &String, domain: &String, port: &String, body: &String, he
     let mut connection = TcpStream::connect(&dom_port).unwrap();
     connection.write(request).unwrap();
     connection.read(&mut response).unwrap();
-    println!("The response is\n\n{}\n===================", std::string::String::from_utf8(response).unwrap());                 
+    println!("The response is\n\n{}\n==============================", std::string::String::from_utf8(response).unwrap());                 
 }
 
 pub fn tls_post_req(path: &String, domain: &String, port: &String, body: &String, headers: &String){
@@ -25,7 +25,7 @@ pub fn tls_post_req(path: &String, domain: &String, port: &String, body: &String
     let mut tls_stream = connector.connect(domain, tcp_stream).unwrap(); 
     tls_stream.write(request).unwrap();
     tls_stream.read(&mut response).unwrap();
-    println!("The response is\n\n{}\n===================", std::string::String::from_utf8(response).unwrap());  
+    println!("The response is\n\n{}\n==============================", std::string::String::from_utf8(response).unwrap());  
 }
 
 fn create_post_request(path: &String, domain: &String, body: &String, headers: &String) -> String{
