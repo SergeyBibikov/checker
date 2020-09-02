@@ -1,0 +1,11 @@
+{   
+    "protocol":"https/https",
+    "path": "",
+    "domain": "***.ru",
+    "port": "80/443",
+    "method": "GET/POST",
+    "max_reqs_per_conn": 100,
+    "headers":"Content-type: text/xml;charset=UTF-8\n",
+    "path_to_body":"body.json",
+    "thread_num": 1
+}
