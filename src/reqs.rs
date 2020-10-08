@@ -2,6 +2,7 @@ use std::io::prelude::*;
 use native_tls::TlsConnector;
 use std::net::TcpStream;
 use std::string::String;
+use std::thread;
 
 pub fn http_get(path: &String, domain: &String, port: &String, headers: &String, reqs_per_connection: &usize, req_num: &usize){
     let temp = create_get_req(path, domain, headers);
@@ -14,7 +15,7 @@ pub fn http_get(path: &String, domain: &String, port: &String, headers: &String,
         for _ in 0..*reqs_per_connection{ connection.write(request).unwrap();}
     }
     finish = start.elapsed().as_millis();
-    println!("{} reqs ({} per connection) sent in {} ms", *req_num,*reqs_per_connection, finish);    
+    println!("{:?}, {} reqs ({} per connection) sent in {} ms",thread::current().id(), *req_num,*reqs_per_connection, finish);    
 }   
 
 pub fn https_get(path: &String, domain: &String, port: &String, headers: &String, reqs_per_connection: &usize, req_num: &usize){
@@ -30,7 +31,7 @@ pub fn https_get(path: &String, domain: &String, port: &String, headers: &String
         for _ in 0..*reqs_per_connection{ tls_stream.write(request).unwrap();}
     }
     finish = start.elapsed().as_millis();
-    println!("{} reqs ({} per connection) sent in {} ms", *req_num,*reqs_per_connection, finish);
+    println!("{:?}, {} reqs ({} per connection) sent in {} ms",thread::current().id(), *req_num,*reqs_per_connection, finish);
 }
 
 pub fn http_post(path: &String, domain: &String, port: &String, body: &String, headers: &String, reqs_per_connection: &usize, req_num: &usize){
@@ -42,7 +43,7 @@ pub fn http_post(path: &String, domain: &String, port: &String, body: &String, h
     for _ in 0..(req_num/reqs_per_connection){let mut connection = TcpStream::connect(&dom_port).unwrap();
     for _ in 0..*reqs_per_connection{ connection.write(request).unwrap();}}
     finish = start.elapsed().as_millis();
-    println!("{} reqs ({} per connection) sent in {} ms", *req_num,*reqs_per_connection, finish);                
+    println!("{:?}, {} reqs ({} per connection) sent in {} ms",thread::current().id(), *req_num,*reqs_per_connection, finish);                
 }
 
 pub fn https_post(path: &String, domain: &String, port: &String, body: &String, headers: &String, reqs_per_connection: &usize, req_num: &usize){
@@ -58,7 +59,7 @@ pub fn https_post(path: &String, domain: &String, port: &String, body: &String, 
         for _ in 0..*reqs_per_connection{ tls_stream.write(request).unwrap();}
     }
     finish = start.elapsed().as_millis();
-    println!("{} reqs ({} per connection) sent in {} ms", *req_num,*reqs_per_connection, finish);
+    println!("{:?}, {} reqs ({} per connection) sent in {} ms",thread::current().id(), *req_num,*reqs_per_connection, finish);
 }
 
 fn create_get_req(path: &String, domain: &String, headers: &String)-> String {

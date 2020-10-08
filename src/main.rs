@@ -10,7 +10,7 @@ use posts::*;
 use gets::*;
 use reqs::*;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 struct Request {
     protocol: String,
     path: String,
@@ -35,6 +35,11 @@ fn main() {
             let req_num:usize = args[3].parse().unwrap();
             inp = init().unwrap();
             bench(&inp,&req_num);
+        },
+        "m"=>{
+            let req_num:usize = args[3].parse().unwrap();
+            inp = init().unwrap();
+            mult_thr_reqs(inp,req_num);
         },
         _ => {print!("No mode specified");std::process::exit(1)}
     }
@@ -71,6 +76,30 @@ fn single_req(req_d: &Request){
         tls_post_req(&req_d.path, &req_d.domain, &req_d.port, &req_body, &req_d.headers)
     }
 }
+
+fn mult_thr_reqs(req_d: Request,req_num: usize){
+    let mut vec_of_handles: Vec<std::thread::JoinHandle<_>> = vec![];
+    print!("\nAddress - {}:{}, {} threads\n=============================\n",req_d.domain,req_d.port,req_d.thread_num);
+    let start = std::time::Instant::now();
+    let finish: u128; 
+    for _ in 0..req_d.thread_num{
+        let r = req_d.clone();
+        let h = std::thread::spawn(move || {
+            bench(&r,&req_num);
+        });
+        vec_of_handles.push(h);
+    }
+    for i in vec_of_handles {
+        i.join().unwrap();
+    }
+    finish = start.elapsed().as_millis();
+    println!("The check took {} secs",(finish as f64/1000.0 as f64));
+}
+
+/*fn thread_creation(req_d: &Request, req_num: &usize)->Vec<std::thread::JoinHandle<()>>{
+    let mut vec_of_joins: Vec<std::thread::JoinHandle<()>>=vec![];
+    vec_of_joins
+}*/
 
 fn bench (req_d: &Request, req_num: &usize){
     if req_d.protocol == "http".to_string() && req_d.method=="GET"{
