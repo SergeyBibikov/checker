@@ -1,14 +1,10 @@
-mod posts;
-mod gets;
-mod reqs;
+mod lib;
 
 use serde::{Deserialize, Serialize};
 use serde_json::Result;
 use std::{fs,str};
 use std::string::String;
-use posts::*;
-use gets::*;
-use reqs::*;
+use lib::{posts::*,gets::*,reqs::*};
 
 #[derive(Serialize, Deserialize, Clone)]
 struct Request {
@@ -95,11 +91,6 @@ fn mult_thr_reqs(req_d: Request,req_num: usize){
     finish = start.elapsed().as_millis();
     println!("The check took {} secs",(finish as f64/1000.0 as f64));
 }
-
-/*fn thread_creation(req_d: &Request, req_num: &usize)->Vec<std::thread::JoinHandle<()>>{
-    let mut vec_of_joins: Vec<std::thread::JoinHandle<()>>=vec![];
-    vec_of_joins
-}*/
 
 fn bench (req_d: &Request, req_num: &usize){
     if req_d.protocol == "http".to_string() && req_d.method=="GET"{
