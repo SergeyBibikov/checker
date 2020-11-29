@@ -90,8 +90,8 @@ fn single_req(req_d: &Request) {
 fn mult_thr_reqs(req_d: Request, req_num: usize) {
     let mut vec_of_handles: Vec<std::thread::JoinHandle<_>> = vec![];
     print!(
-        "\nAddress - {}:{}, {} threads\n=============================\n",
-        req_d.domain, req_d.port, req_d.thread_num
+        "\nAddress - {}:{}, {} threads,{} total reqs\n=============================\n",
+        req_d.domain, req_d.port, req_d.thread_num,req_num*req_d.thread_num
     );
     let start = std::time::Instant::now();
     let finish: u128;
